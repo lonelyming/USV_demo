@@ -20,6 +20,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -105,9 +106,14 @@ int main(void)
   MX_UART7_Init();
   MX_SPI1_Init();
   MX_TIM6_Init();
+  MX_UART4_Init();
+  MX_DMA_Init();
   /* USER CODE BEGIN 2 */
+	HAL_Delay(2000);
+	GPS_Init();
 	MPU6000_Init();
 	Baro_Init();
+	HMC5883_Init();
 	HAL_TIM_Base_Start_IT(&htim6);
 	HAL_Delay(100);
   /* USER CODE END 2 */
@@ -122,7 +128,9 @@ int main(void)
 			Timer6UpdateReady=RESET;
 			Loop_Read_MPU6000();
 			Loop_Read_Bar();
+			Loop_Read_Mag();
 		}
+		Loop_GPS_Parse();
 
     /* USER CODE END WHILE */
 
@@ -193,6 +201,15 @@ PUTCHAR_PROTOTYPE
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	Timer6UpdateReady=SET;
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
+{
+	/* Set transmission flag: trasfer complete*/
+	if(UartHandle->Instance == UART4)
+	{
+		GPS_RX_InterruptHandler();
+	}
 }
 /* USER CODE END 4 */
 

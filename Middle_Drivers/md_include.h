@@ -5,7 +5,7 @@
 *
 * 当前版本：
 * 作    者：
-* 日    期：2017/12/18
+* 日    期：2019/11/12
 * 编译环境：keil5
 *
 * 历史信息：
@@ -19,5 +19,7 @@
 #include "md_led_driver.h"
 #include "md_mpu6000.h"
 #include "md_ms56xx.h"
+#include "md_hmc5883.h"
+#include "md_gps.h"
 
 #endif

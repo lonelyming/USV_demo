@@ -325,7 +325,7 @@ void Loop_Read_Bar(void)
 			//启动下一次温度转换
 			Baro_Enable_Temp_Conv();
 			//printf("pressure is %lf mbar \r\n",m_Ms56xx.pressure/100.0);
-       printf("%ld\r\n",m_Ms56xx.pressure);			
+      //printf("%ld\r\n",m_Ms56xx.pressure);			
 		}
 
 	}

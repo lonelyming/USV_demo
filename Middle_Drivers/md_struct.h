@@ -37,6 +37,7 @@ typedef struct{
 	float z;
 }Vector3_Float;
 
+/* MPU6000六轴姿态传感器定义的结构体*/
 typedef struct{
 	Vector3_Int16 acc_raw;
 	Vector3_Int16 gyro_raw;
@@ -50,6 +51,14 @@ typedef struct {
   int32_t temp;
 	int32_t pressure;
 } MS56XX_Data;
+
+/* HMC5883地磁计定义的结构体*/
+typedef struct {
+				float x;
+				float y;
+				float z;
+				float orientation;
+} hmc5883MagData;
 
 
 #define CONSTRAINT(in, min, max)  (in > max ? max : (in < min ? min : in))

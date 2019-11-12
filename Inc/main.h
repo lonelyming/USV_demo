@@ -64,6 +64,10 @@ void Error_Handler(void);
 #define ACCEL_MAG_CS_GPIO_Port GPIOC
 #define MPU_CS_Pin GPIO_PIN_2
 #define MPU_CS_GPIO_Port GPIOC
+#define FMU_UART4_TX_Pin GPIO_PIN_0
+#define FMU_UART4_TX_GPIO_Port GPIOA
+#define FMU_UART4_RX_Pin GPIO_PIN_1
+#define FMU_UART4_RX_GPIO_Port GPIOA
 #define SPI_INT_SCK_Pin GPIO_PIN_5
 #define SPI_INT_SCK_GPIO_Port GPIOA
 #define SPI_INT_MISO_Pin GPIO_PIN_6
@@ -78,6 +82,10 @@ void Error_Handler(void);
 #define FMC_LED_AMBER_GPIO_Port GPIOE
 #define BARO_CS_Pin GPIO_PIN_7
 #define BARO_CS_GPIO_Port GPIOD
+#define FMU_I2C1_SCL_Pin GPIO_PIN_8
+#define FMU_I2C1_SCL_GPIO_Port GPIOB
+#define FMU_I2C1_SDA_Pin GPIO_PIN_9
+#define FMU_I2C1_SDA_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
