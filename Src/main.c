@@ -29,7 +29,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "md_include.h"
-
+//#include "mavlink.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -55,6 +55,7 @@ __IO ITStatus Timer6UpdateReady = RESET;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+static void MX_NVIC_Init(void);
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
 
@@ -108,12 +109,15 @@ int main(void)
   MX_TIM6_Init();
   MX_UART4_Init();
   MX_DMA_Init();
+
+  /* Initialize interrupts */
+  MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
-	HAL_Delay(2000);
-	GPS_Init();
+//	HAL_Delay(2000);
+//	GPS_Init();
 	MPU6000_Init();
 	Baro_Init();
-	HMC5883_Init();
+//	HMC5883_Init();
 	HAL_TIM_Base_Start_IT(&htim6);
 	HAL_Delay(100);
   /* USER CODE END 2 */
@@ -126,11 +130,15 @@ int main(void)
 		if(Timer6UpdateReady==SET)
 		{
 			Timer6UpdateReady=RESET;
-			Loop_Read_MPU6000();
-			Loop_Read_Bar();
-			Loop_Read_Mag();
+			Loop_Read_MPU6000();	//6轴姿态传感器循环函数
+			Loop_Read_Bar();			//气压传感器循环函数
+//			Loop_Read_Mag(); 			//地磁传感器循环函数
+//			mavlink_test();
 		}
-		Loop_GPS_Parse();
+		Baro_Read_Pressure_Test();
+		HAL_Delay(100);
+		
+//		Loop_GPS_Parse();				//GPS循环函数
 
     /* USER CODE END WHILE */
 
@@ -182,6 +190,23 @@ void SystemClock_Config(void)
   }
 }
 
+/**
+  * @brief NVIC Configuration.
+  * @retval None
+  */
+static void MX_NVIC_Init(void)
+{
+  /* DMA1_Stream2_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream2_IRQn);
+  /* UART4_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(UART4_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(UART4_IRQn);
+  /* TIM6_DAC_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(TIM6_DAC_IRQn, 2, 1);
+  HAL_NVIC_EnableIRQ(TIM6_DAC_IRQn);
+}
+
 /* USER CODE BEGIN 4 */
 PUTCHAR_PROTOTYPE
 {
@@ -190,11 +215,12 @@ PUTCHAR_PROTOTYPE
   HAL_UART_Transmit(&huart7, (uint8_t *)&ch, 1, 0xFFFF);
   return ch;
 }
+
 /**************************函数声明***********************
 *函数名称：HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-*输入参数：定时器
+*输入参数：
 *返回参数：
-*功    能：定时器6中断回调函数
+*功    能：定时器中断回调函数
 *作    者：
 *日    期：2019/11/11
 *************************************************************/
@@ -203,6 +229,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	Timer6UpdateReady=SET;
 }
 
+/**************************函数声明***********************
+*函数名称：HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
+*输入参数：
+*返回参数：
+*功    能：串口中断回调函数
+*作    者：
+*日    期：2019/11/12
+*************************************************************/
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
 	/* Set transmission flag: trasfer complete*/
